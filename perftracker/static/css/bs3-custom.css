@@ -68,3 +68,44 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
 .modal-header a:hover {
   color: #fff;
 }
+
+/*
+Styles for bottom panel
+ */
+.panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+  position: fixed;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-color: rgba(0, 0, 0, 0.7);
+  border-radius: 0;
+  left: 0;
+  bottom: 0;
+  color: black;
+  height: 8%;
+  margin: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
