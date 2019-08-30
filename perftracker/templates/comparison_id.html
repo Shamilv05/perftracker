@@ -96,7 +96,8 @@ So we will use static HTML with couple tricks:
   </div>
 {% endfor %}
 
-<div class="panel">
+<button class="panel__btn_toggle"><i class="fa fa-angle-down"></i></button>
+<div class="panel panel_opened">
   <div class="panel__unit_toggle-tables">
     <h4>Toggle Tables</h4>
   </div>
@@ -197,6 +198,23 @@ $(document).ready(function() {
 {% endfor %}    ]);
 {% endif %}
 {% endfor %} {% endfor %}
+
+  $('.panel__btn_toggle').click(function () {
+    $('.panel').toggle(700);
+    if ($('.panel').hasClass('panel_opened')) {
+      $('.panel').removeClass('panel_opened').addClass('panel_hidden');
+      $(this).animate({
+        'bottom': 0
+      }, 500);
+      $("i.fa.fa-angle-down").replaceWith('<i class="fa fa-angle-up"></i>');
+    } else {
+      $('.panel').removeClass('panel_hidden').addClass('panel_opened');
+      $(this).animate({
+        'bottom': '8%'
+      }, 500);
+      $("i.fa.fa-angle-up").replaceWith('<i class="fa fa-angle-down"></i>');
+    }
+  });
 });
 </script>
 
