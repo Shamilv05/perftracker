@@ -139,6 +139,52 @@ Styles for bottom panel
   background-color: white;
 }
 
+/* Styles for GoTo button */
+
+.panel__btn_drop {
+  background-color: transparent;
+  color: white;
+  padding: 0;
+  font-weight: 500;
+  font-size: 13px;
+  border: none;
+}
+
+.panel_dropup-content {
+  display: none;
+  position: absolute;
+  font-weight: bold;
+  bottom: 95%;
+  right: 12%;
+  background-color: rgba(0, 0, 0, 0.5);
+  min-width: 200px;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  z-index: 1;
+  width: 10%;
+  height: 300%;
+  overflow-y: auto;
+}
+
+.panel_dropup-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 1.5rem;
+}
+
+.panel_dropup-content a:hover {background-color: rgba(0, 0, 0, 0.3)}
+
+.panel__unit_go-to:hover .panel_dropup-content {
+  display: block;
+}
+
+.panel__unit_go-to:hover .panel__btn_drop{
+  background-color: grey;
+  color: black;
+}
+
+/* end of GoTo button styles */
 
 
 
