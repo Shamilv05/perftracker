@@ -65,7 +65,7 @@ So we will use static HTML with couple tricks:
       </div>
     {% endif %}
     {% if s.table_type == PTCmpTableType.SHOW %}
-      <div class='container collapse in pt_div_cmp' id='results_{{ g.id }}_{{ s.id }}'>
+      <div class='container collapse in pt_div_cmp group__table' id='results_{{ g.id }}_{{ s.id }}'>
         <table id="tests_{{ g.id }}_{{ s.id }}" class="display dataTable" cellspacing="0" width="100%">
           <thead>
             <tr>
@@ -99,13 +99,22 @@ So we will use static HTML with couple tricks:
 <button class="panel__btn_toggle"><i class="fa fa-angle-down"></i></button>
 <div class="panel panel_opened">
   <div class="panel__unit_toggle-tables">
-    <h4>Toggle Tables</h4>
+    <input class="panel__unit__checkbox_input" type="checkbox" id="checkbox_toggle-tables">
+    <label class="panel__unit__checkbox_label" for="checkbox_toggle-tables">
+      <h4>Toggle Tables</h4>
+    </label>
   </div>
   <div class="panel__unit_toggle-graphs">
-    <h4>Toggle Graphs</h4>
+    <input class="panel__unit__checkbox_input" type="checkbox" id="checkbox_toggle-graphs">
+    <label class="panel__unit__checkbox_label" for="checkbox_toggle-graphs">
+      <h4>Toggle Graphs</h4>
+    </label>
   </div>
   <div class="panel__unit_show-selected">
-    <h4>Show Selected Only</h4>
+    <input class="panel__unit__checkbox_input" type="checkbox" id="checkbox_show-selected">
+    <label class="panel__unit__checkbox_label" for="checkbox_show-selected">
+      <h4>Show Selected Only</h4>
+    </label>
   </div>
   <div class="panel__unit_unselect">
     <h4>Unselect All</h4>
@@ -223,6 +232,10 @@ $(document).ready(function() {
       }, 500);
       $("i.fa.fa-angle-up").replaceWith('<i class="fa fa-angle-down"></i>');
     }
+  });
+
+  $('#checkbox_toggle-tables').on('change', function() {
+    $(this).is(":checked") ? $(".group__table").hide(500) : $(".group__table").show(500);
   });
 });
 </script>
