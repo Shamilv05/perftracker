@@ -51,8 +51,8 @@ So we will use static HTML with couple tricks:
 {% endcomment %}
 
 {% for g_tag, g in cmp_view.groups.items %}
-  <h3 class='pt_collapse expanded' data-toggle='collapse' data-target='#data_{{ g.id }}'><a id='g_{{ g.id }}'>{{ g.group_obj.title }}</a></h3>
-  <div class='collapse in' id='data_{{ g.id }}'>
+  <h3 class='perftracker_groups' id="perftracker__group_{{ g.id }}"><a id='g_{{ g.id }}'>{{ g.group_obj.title }}</a> <i class="fa fa-caret-down"></i></h3>
+  <div class='collapse in perftracker__group perftracker__group_opened' id='data_{{ g.id }}'>
   {% for s_tag, s in g.sections.items %}
     <span><h4 style="display: inline">{{ s.title }}</h4>
     <span style="float: right"><a href='#g_{{ g.id }}' title="Section Top"><span class="glyphicon glyphicon-menu-up"/></a>
@@ -236,6 +236,32 @@ $(document).ready(function() {
 
   $('#checkbox_toggle-tables').on('change', function() {
     $(this).is(":checked") ? $(".group__table").hide(500) : $(".group__table").show(500);
+  });
+
+  $('#checkbox_toggle-graphs').on('change', function() {
+    if ($(this).is(":checked")) {
+      $(".perftracker__group").hide(500);
+      $('i.fa.fa-caret-down').replaceWith('<i class="fa fa-caret-right"></i>');
+    } else {
+      $(".perftracker__group").show(500);
+      $('i.fa.fa-caret-right').replaceWith('<i class="fa fa-caret-down"></i>');
+    }
+  });
+
+  $('.perftracker_groups').on('click', function () {
+    var group_id = '#' + $(this).attr('id');
+    var content_id = group_id.replace('perftracker__group', 'data');
+    if($(content_id).hasClass('perftracker__group_opened')) {
+      $(content_id).removeClass('perftracker__group_opened');
+      $(content_id).addClass('perftracker__group_closed');
+      $(content_id).hide(500);
+      $(group_id + ' > i.fa.fa-caret-down').replaceWith('<i class="fa fa-caret-right"></i>');
+    } else {
+      $(content_id).addClass('perftracker__group_opened');
+      $(content_id).removeClass('perftracker__group_closed');
+      $(content_id).show(500);
+      $(group_id + ' > i.fa.fa-caret-right').replaceWith('<i class="fa fa-caret-down"></i>');
+    }
   });
 });
 </script>
