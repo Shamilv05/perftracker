@@ -186,19 +186,7 @@ Styles for bottom panel
 
 /* end of GoTo button styles */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.panel_unit_unselect-btn {
+  background-color: transparent;
+  border: none;
+}

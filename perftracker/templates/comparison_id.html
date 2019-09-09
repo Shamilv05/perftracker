@@ -129,7 +129,7 @@ So we will use static HTML with couple tricks:
     </label>
   </div>
   <div class="panel__unit_unselect">
-    <h4>Unselect All</h4>
+    <button type="button" class="panel_unit_unselect-btn"><h4>Unselect All</h4></button>
   </div>
   <div class="panel__unit_go-to">
     <button class="panel__btn_drop">Go To...</button>
@@ -298,11 +298,16 @@ $(document).ready(function() {
 
     if($(this).prop("checked") == true){
       $('input[class="perftracker__group_graph-checkbox"]').attr("disabled", true);
+      $('button[class="panel_unit_unselect-btn"]').attr("disabled", true);
     } else {
       $('input[class="perftracker__group_graph-checkbox"]').removeAttr("disabled");
+      $('button[class="panel_unit_unselect-btn"]').removeAttr("disabled");
     }
+  });
+
+  $('.panel_unit_unselect-btn').on('click', function() {
+    $('input[class="perftracker__group_graph-checkbox"]').prop('checked', false);
   });
 });
 </script>
-
 {% endblock %}
