@@ -52,48 +52,60 @@ So we will use static HTML with couple tricks:
 
 {% for g_tag, g in cmp_view.groups.items %}
   <h3 class='perftracker_groups' id="perftracker__group_{{ g.id }}"><a id='g_{{ g.id }}'>{{ g.group_obj.title }}</a> <i class="fa fa-caret-down"></i></h3>
-  <div class='collapse in perftracker__group perftracker__group_opened' id='data_{{ g.id }}'>
-  {% for s_tag, s in g.sections.items %}
-    <span><h4 style="display: inline">{{ s.title }}</h4>
-    <span style="float: right"><a href='#g_{{ g.id }}' title="Section Top"><span class="glyphicon glyphicon-menu-up"/></a>
-    <a href='#s_{{ g.id }}_{{ s.id }}' id='s_{{ g.id }}_{{ s.id }}' title="Permanent Link"><span class="glyphicon glyphicon-link"></span></a>
-    </span></span>
-    {% spaceless %}
-    {% if s.chart_type != PTCmpChartType.NOCHART %}
-      <div class='container collapse in pt_div_cmp'>
-        <div id="chart_{{ g.id }}_{{ s.id }}" class='pt_chart'>Loading chart...</div>
+    <div class='collapse in perftracker__group perftracker__group_opened' id='data_{{ g.id }}'>
+    {% for s_tag, s in g.sections.items %}
+      <div class="group_content" id="group_content_{{ g.id }}_{{ s.id }}">
+      <span>
+        <input type="checkbox" class="perftracker__group_graph-checkbox" id="graph-checkbox_{{ g.id }}_{{ s.id }}">
+        <label class="perftracker__group_graph-checkbox_label" for="graph-checkbox_{{ g.id }}_{{ s.id }}">
+          <h4 style="display: inline">{{ s.title }}</h4>
+        </label>
+        <span style="float: right">
+          <a href='#g_{{ g.id }}' title="Section Top">
+            <span class="glyphicon glyphicon-menu-up"/>
+          </a>
+          <a href='#s_{{ g.id }}_{{ s.id }}' id='s_{{ g.id }}_{{ s.id }}' title="Permanent Link">
+            <span class="glyphicon glyphicon-link"></span>
+          </a>
+        </span>
+      </span>
+      {% spaceless %}
+      {% if s.chart_type != PTCmpChartType.NOCHART %}
+        <div class='container collapse in pt_div_cmp'>
+          <div id="chart_{{ g.id }}_{{ s.id }}" class='pt_chart'>Loading chart...</div>
+        </div>
+      {% endif %}
+      {% if s.table_type == PTCmpTableType.SHOW %}
+        <div class='container collapse in pt_div_cmp group__table' id='results_{{ g.id }}_{{ s.id }}'>
+          <table id="tests_{{ g.id }}_{{ s.id }}" class="display dataTable" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+              <th colspan='4'></th>
+              {% for job in jobs %}
+                <th class='pt_job' colspan='{{ forloop.counter0|add:"2" }}'>#{{ forloop.counter }} - {{ job.title }}</th>
+              {% endfor %}
+              </tr>
+              <tr>
+              <th class='colExpander'></th>
+              <th class='colId'></th>
+              <th class='colSeqNum'>#</th>
+              <th class='colTag pt_left'>Tag</th>
+              {% for job in jobs %}
+                <th class='colScore pt_lborder'>Score</th>
+                <th class='colDeviation pt_right'>&plusmn;%</th>
+                {% range 1:forloop.counter as i %}
+                  <th class='colDiff pt_lborder pt_right'>% vs #{{ i }}</th>
+                {% endrange %}
+              {% endfor %}
+              </tr>
+            </thead>
+          </table>
+        </div>
+      {% endif %}
+      {% endspaceless %}
       </div>
-    {% endif %}
-    {% if s.table_type == PTCmpTableType.SHOW %}
-      <div class='container collapse in pt_div_cmp group__table' id='results_{{ g.id }}_{{ s.id }}'>
-        <table id="tests_{{ g.id }}_{{ s.id }}" class="display dataTable" cellspacing="0" width="100%">
-          <thead>
-            <tr>
-            <th colspan='4'></th>
-            {% for job in jobs %}
-              <th class='pt_job' colspan='{{ forloop.counter0|add:"2" }}'>#{{ forloop.counter }} - {{ job.title }}</th>
-            {% endfor %}
-            </tr>
-            <tr>
-            <th class='colExpander'></th>
-            <th class='colId'></th>
-            <th class='colSeqNum'>#</th>
-            <th class='colTag pt_left'>Tag</th>
-            {% for job in jobs %}
-              <th class='colScore pt_lborder'>Score</th>
-              <th class='colDeviation pt_right'>&plusmn;%</th>
-              {% range 1:forloop.counter as i %}
-                <th class='colDiff pt_lborder pt_right'>% vs #{{ i }}</th>
-              {% endrange %}
-            {% endfor %}
-            </tr>
-          </thead>
-        </table>
-      </div>
-    {% endif %}
-    {% endspaceless %}
-  {% endfor %}
-  </div>
+    {% endfor %}
+    </div>
 {% endfor %}
 
 <button class="panel__btn_toggle"><i class="fa fa-angle-down"></i></button>
@@ -111,7 +123,7 @@ So we will use static HTML with couple tricks:
     </label>
   </div>
   <div class="panel__unit_show-selected">
-    <input class="panel__unit__checkbox_input" type="checkbox" id="checkbox_show-selected">
+    <input class="panel__unit__checkbox_input panel__unit__checkbox_input-not-checked" type="checkbox" id="checkbox_show-selected">
     <label class="panel__unit__checkbox_label" for="checkbox_show-selected">
       <h4>Show Selected Only</h4>
     </label>
@@ -261,6 +273,33 @@ $(document).ready(function() {
       $(content_id).removeClass('perftracker__group_closed');
       $(content_id).show(500);
       $(group_id + ' > i.fa.fa-caret-right').replaceWith('<i class="fa fa-caret-down"></i>');
+    }
+  });
+
+  $('#checkbox_show-selected').on('change', function() {
+    var selectedCheckboxes = $('input[class="perftracker__group_graph-checkbox"]:checked').map(function() {
+      var checkbox = $(this).attr('id');
+      var selectedContent = '#' + checkbox.replace('graph-checkbox', 'group_content');
+      return selectedContent;
+    }).get();
+
+    if(selectedCheckboxes.length > 0) {
+      if($(this).hasClass('panel__unit__checkbox_input-not-checked')) {
+        $('.group_content').hide(500);
+        selectedCheckboxes.forEach(function(elem) {
+          $(elem + '.group_content').show(0);
+        });
+        $(this).removeClass('panel__unit__checkbox_input-not-checked');
+      } else {
+        $('.group_content').show(500);
+        $(this).addClass('panel__unit__checkbox_input-not-checked');
+      }
+    }
+
+    if($(this).prop("checked") == true){
+      $('input[class="perftracker__group_graph-checkbox"]').attr("disabled", true);
+    } else {
+      $('input[class="perftracker__group_graph-checkbox"]').removeAttr("disabled");
     }
   });
 });
