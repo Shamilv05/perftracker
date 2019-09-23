@@ -51,7 +51,8 @@ So we will use static HTML with couple tricks:
 {% endcomment %}
 
 {% for g_tag, g in cmp_view.groups.items %}
-  <h3 class='perftracker_groups' id="perftracker__group_{{ g.id }}"><a id='g_{{ g.id }}'>{{ g.group_obj.title }}</a> <i class="fa fa-caret-down"></i></h3>
+<!--  <div class="graphs_container">-->
+  <h3 class='perftracker_groups graphs_container' id="perftracker__group_{{ g.id }}"><a id='g_{{ g.id }}'>{{ g.group_obj.title }}</a> <i class="fa fa-caret-down"></i></h3>
     <div class='collapse in perftracker__group perftracker__group_opened' id='data_{{ g.id }}'>
     {% for s_tag, s in g.sections.items %}
       <div class="group_content" id="group_content_{{ g.id }}_{{ s.id }}">
@@ -106,6 +107,7 @@ So we will use static HTML with couple tricks:
       </div>
     {% endfor %}
     </div>
+<!--    </div>-->
 {% endfor %}
 
 <button class="panel__btn_toggle"><i class="fa fa-angle-down"></i></button>
@@ -132,7 +134,7 @@ So we will use static HTML with couple tricks:
     <button type="button" class="panel_unit_unselect-btn"><h4>Unselect All</h4></button>
   </div>
   <div class="panel__unit_go-to">
-    <button class="panel__btn_drop">Go To...</button>
+    <button class="panel__btn_drop">Group...</button>
     <div class="panel_dropup-content">
       {% for g_tag, g in cmp_view.groups.items %}
         {% if g.group_obj.title|length %}
@@ -144,8 +146,12 @@ So we will use static HTML with couple tricks:
     </div>
   </div>
   <div class="panel__unit_arrows">
-    <div class="panel_unit_arrows_up arrows_inline"><i class="fa fa-arrow-up"></i></div>
-    <div class="panel_unit_arrows_down arrows_inline"><i class="fa fa-arrow-down"></i></div>
+    <div class="panel_unit_arrows_up arrows_inline">
+      <button type="button" class="panel_unit_arrows_up_btn panel__btn_motion"><i class="fa fa-arrow-up"></i></button>
+    </div>
+    <div class="panel_unit_arrows_down arrows_inline">
+      <button type="button" class="panel_unit_arrows_down_btn panel__btn_motion"><i class="fa fa-arrow-down"></i></button>
+    </div>
   </div>
 </div>
 
@@ -230,32 +236,34 @@ $(document).ready(function() {
 {% endfor %} {% endfor %}
 
   $('.panel__btn_toggle').click(function () {
-    $('.panel').toggle(700);
+    $('.panel').toggle(0);
     if ($('.panel').hasClass('panel_opened')) {
       $('.panel').removeClass('panel_opened').addClass('panel_hidden');
-      $(this).animate({
-        'bottom': 0
-      }, 500);
+      // $(this).animate({
+      //   'bottom': 0
+      // }, 0);
+      $(this).css({"bottom": "0"});
       $("i.fa.fa-angle-down").replaceWith('<i class="fa fa-angle-up"></i>');
     } else {
       $('.panel').removeClass('panel_hidden').addClass('panel_opened');
-      $(this).animate({
-        'bottom': '8%'
-      }, 500);
+      // $(this).animate({
+      //   'bottom': '8%'
+      // }, 0);
+      $(this).css({"bottom": "8%"});
       $("i.fa.fa-angle-up").replaceWith('<i class="fa fa-angle-down"></i>');
     }
   });
 
   $('#checkbox_toggle-tables').on('change', function() {
-    $(this).is(":checked") ? $(".group__table").hide(500) : $(".group__table").show(500);
+    $(this).is(":checked") ? $(".group__table").hide(100) : $(".group__table").show(100);
   });
 
   $('#checkbox_toggle-graphs').on('change', function() {
     if ($(this).is(":checked")) {
-      $(".perftracker__group").hide(500);
+      $(".perftracker__group").hide(100);
       $('i.fa.fa-caret-down').replaceWith('<i class="fa fa-caret-right"></i>');
     } else {
-      $(".perftracker__group").show(500);
+      $(".perftracker__group").show(100);
       $('i.fa.fa-caret-right').replaceWith('<i class="fa fa-caret-down"></i>');
     }
   });
@@ -266,12 +274,12 @@ $(document).ready(function() {
     if($(content_id).hasClass('perftracker__group_opened')) {
       $(content_id).removeClass('perftracker__group_opened');
       $(content_id).addClass('perftracker__group_closed');
-      $(content_id).hide(500);
+      $(content_id).hide(100);
       $(group_id + ' > i.fa.fa-caret-down').replaceWith('<i class="fa fa-caret-right"></i>');
     } else {
       $(content_id).addClass('perftracker__group_opened');
       $(content_id).removeClass('perftracker__group_closed');
-      $(content_id).show(500);
+      $(content_id).show(100);
       $(group_id + ' > i.fa.fa-caret-right').replaceWith('<i class="fa fa-caret-down"></i>');
     }
   });
@@ -285,13 +293,13 @@ $(document).ready(function() {
 
     if(selectedCheckboxes.length > 0) {
       if($(this).hasClass('panel__unit__checkbox_input-not-checked')) {
-        $('.group_content').hide(500);
+        $('.group_content').hide(100);
         selectedCheckboxes.forEach(function(elem) {
           $(elem + '.group_content').show(0);
         });
         $(this).removeClass('panel__unit__checkbox_input-not-checked');
       } else {
-        $('.group_content').show(500);
+        $('.group_content').show(100);
         $(this).addClass('panel__unit__checkbox_input-not-checked');
       }
     }
@@ -307,6 +315,27 @@ $(document).ready(function() {
 
   $('.panel_unit_unselect-btn').on('click', function() {
     $('input[class="perftracker__group_graph-checkbox"]').prop('checked', false);
+  });
+
+  $(window).bind('scroll', function() {
+        $('.graphs_container').each(function() {
+            var group = $(this);
+            var position = group.position().top - $(window).scrollTop();
+
+            if (position <= 0) {
+                group.addClass('selected');
+            } else {
+                group.removeClass('selected');
+            }
+        });
+  });
+
+  $('.panel_unit_arrows_down_btn').on('click', function() {
+    $('html, body').animate({ scrollTop: ($('.graphs_container').not('.selected')).offset().top}, 100);
+  });
+
+  $('.panel_unit_arrows_up_btn').on('click', function() {
+    $('html, body').animate({ scrollTop: ($($('.graphs_container.selected').last()).prev(".perftracker__group").offset().top - 25) + 'px'}, 100);
   });
 });
 </script>

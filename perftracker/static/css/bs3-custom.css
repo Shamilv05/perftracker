@@ -74,24 +74,25 @@ Styles for bottom panel
  */
 .panel {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
   align-items: center;
 
   position: fixed;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.65);
   border-color: rgba(0, 0, 0, 0.7);
   border-radius: 0;
   left: 0;
   bottom: 0;
   color: white;
   height: 8%;
+  min-height: 65px;
   margin: 0;
 }
 
 .panel > div {
-  text-align: center;
+  text-align: start;
 }
 
 .panel h4 {
@@ -107,25 +108,23 @@ Styles for bottom panel
 }
 
 .panel__unit_show-selected {
-  grid-area: 3/1/4/2;
+  grid-area: 1/2/2/3;
 }
 
 .panel__unit_unselect {
-  grid-area: 3/2/4/3;
+  grid-area: 2/2/3/3;
 }
 
 .panel__unit_go-to {
-  grid-area: 1/3/2/4;
+  grid-area: 1/4/2/5;
 }
 
 .panel__unit_arrows {
-  grid-area: 2/3/4/4;
+  grid-area: 2/4/4/5;
 }
 
 .arrows_inline {
   display: inline;
-  border: 1px solid white;
-  padding: 7px 9px;
   margin: 3px;
 }
 
@@ -135,6 +134,8 @@ Styles for bottom panel
   right: 2%;
   width: 4%;
   height: 2%;
+  min-height: 17px;
+  min-width: 50px;
   border: 1px solid black;
   background-color: white;
 }
@@ -150,19 +151,58 @@ Styles for bottom panel
   border: none;
 }
 
-.panel_dropup-content {
-  display: none;
-  position: absolute;
-  font-weight: bold;
-  bottom: 95%;
-  right: 12%;
-  background-color: rgba(0, 0, 0, 0.5);
-  min-width: 200px;
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-  z-index: 1;
-  width: 10%;
-  height: 300%;
-  overflow-y: auto;
+@media (max-width: 850px) {
+  .panel_dropup-content {
+    display: none;
+    position: absolute;
+    font-weight: bold;
+    bottom: 95%;
+    right: 8%;
+    background-color: rgba(0, 0, 0, 0.65);
+    min-width: 200px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    width: 10%;
+    height: 300%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .panel h4 {
+    font-size: 1rem;
+  }
+
+  .panel__btn_toggle {
+    bottom: 65px;
+  }
+}
+
+@media (max-height: 850px) {
+  .panel__btn_toggle {
+    bottom: 65px;
+  }
+}
+
+@media (min-width: 850px) {
+  .panel_dropup-content {
+    display: none;
+    position: absolute;
+    font-weight: bold;
+    bottom: 95%;
+    right: 16%;
+    background-color: rgba(0, 0, 0, 0.65);
+    min-width: 200px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    width: 10%;
+    height: 300%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .panel h4 {
+    font-size: 1.35rem;
+  }
 }
 
 .panel_dropup-content a {
@@ -180,8 +220,8 @@ Styles for bottom panel
 }
 
 .panel__unit_go-to:hover .panel__btn_drop{
-  background-color: grey;
-  color: black;
+  background-color: transparent;
+  color: #c9d1cb;
 }
 
 /* end of GoTo button styles */
@@ -189,4 +229,22 @@ Styles for bottom panel
 .panel_unit_unselect-btn {
   background-color: transparent;
   border: none;
+}
+
+.panel__btn_motion {
+  background-color: transparent;
+  border: 1px solid white;
+  padding: 7px 10px;
+}
+
+.panel__unit_toggle-tables, .panel__unit_toggle-graphs, .panel__unit_show-selected, .panel__unit_arrows {
+  margin-left: 2.5%;
+}
+
+.panel__unit_go-to {
+  margin-left: 7%;
+}
+
+.panel__unit_unselect {
+  margin-left: 5%;
 }
